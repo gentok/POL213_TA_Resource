@@ -1,0 +1,24 @@
+## List of files that should be ignored from git
+
+# Folders
+data/
+
+# File extensions
+*.html
+*.knit.md
+*.spin.R
+*.spin.Rmd
+*.utf8.md
+*.Rproj.user
+*.Rproj
+*.Rhistory
+*.pyc
+*.ini
+
+# LaTeX files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
