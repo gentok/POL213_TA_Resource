@@ -3,6 +3,10 @@
 
 This is the web repository that stores files relevant to the TA session for POL213 (2019 Spring Quarter @ UC Davis)
 
+## Lab Sessions
+
+* [**Week 2 Session**](TA_session_041119.md) (also in [PDF](TA_session_041119.pdf) and [R Code](TA_session_041119.R))
+
 ## Instruction for Checking & Downloading Files
 
 * **R Code files (.R)**:
@@ -20,6 +24,8 @@ This is the web repository that stores files relevant to the TA session for POL2
 
 * **Datasets** (under data folder)
   1. Click and open the file.
-  2. Copy the URL of the file page.
-  3. Import directly to workspace using URL and data import function.
-  4. Save data to your project folder with preferred name.
+  2. Click "Raw" button at the top right of the window (if possible).
+  3. Copy the URL of the file page.
+  4. Import directly to workspace using URL and data import function.
+  5. Save data to your project folder with preferred name.
+
