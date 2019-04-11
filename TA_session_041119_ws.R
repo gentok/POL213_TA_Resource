@@ -148,7 +148,7 @@ llk.logit <- function(param,y,x) {
 # Set starting values taken from OLS.
 ols.result <- lm(y~x); ols.result
 stval <- ols.result$coeff
-stval
+
 #' ## First iteration
 
 # Optimize by log-likelihood
@@ -305,12 +305,242 @@ p + geom_line(aes(y=prediction, color="Auto"), size=1) +
 #' 2008 McCain vote share in California.
 #' Optimize by both automatic and manual methods and compare results.
 
+# Obama Vote Share in CA
+CA_obama <- d[d$year==2008 & d$party == "democrat" & d$state_po == "CA",]
+# McCain Vote Share in CA
+CA_mccain <- d[d$year==2008 & d$party == "republican" & d$state_po == "CA",]
+# Obama Vote Share in CA
+CA_obama12 <- d[d$year==2012 & d$party == "democrat" & d$state_po == "CA",]
+# Romney Vote Share in CA
+CA_romney <- d[d$year==2012 & d$party == "republican" & d$state_po == "CA",]
+# Clinton Vote Share in CA
+CA_clinton <- d[d$year==2016 & d$party == "democrat" & d$state_po == "CA",]
+# Trump Vote Share in CA
+CA_trump <- d[d$year==2016 & d$party == "republican" & d$state_po == "CA",]
+# Check if county rows match
+all(CA_obama$FIPS == CA_mccain$FIPS)
+all(CA_obama$FIPS == CA_obama12$FIPS)
+all(CA_obama$FIPS == CA_romney$FIPS)
+all(CA_obama$FIPS == CA_clinton$FIPS)
+all(CA_obama$FIPS == CA_trump$FIPS)
+
+#' Calculate 2016 Trump win-lose, 2012 Romney Vote Share, and 2008 McCain Vote Share
+
+# Create Data
+CA_data <- data.frame(FIPS = CA_obama$FIPS)
+
+# McCain Vote Share
+CA_data$mccainshare <- CA_mccain$candidatevotes/(CA_mccain$candidatevotes + 
+                                               CA_obama$candidatevotes) * 100
+# Romney Vote Share
+CA_data$romneyshare <- CA_romney$candidatevotes/(CA_romney$candidatevotes + 
+                                                   CA_obama12$candidatevotes) * 100
+# Trump Win-Lose in County
+CA_data$trumpwin <- (CA_trump$candidatevotes >= CA_clinton$candidatevotes) * 1
+
+#'
+#' Estimate Logistic Regression predicting Trump win-lose by McCain vote share.
+#'
+
+# Plot Trump win-lose by McCain Vote Share
+p <- ggplot(CA_data, aes(x=mccainshare,y=trumpwin)) + 
+  geom_jitter(height=0.1) + # Jittered points
+  geom_hline(aes(yintercept=1), linetype=2) + # Horizontal dashed line @ 1
+  geom_hline(aes(yintercept=0), linetype=2) + # Horizontal dashed line @ 0
+  xlab("McCain Vote Share (2000)") + 
+  ylab("Trump Victory (2008)") + 
+  ggtitle("CA Counties 2008 McCain Vote Share and 2016 Trump Victory") +
+  theme_bw()
+p
+
+# Estimate Logistic regression
+logit.CA_trumpwin <- glm(trumpwin ~ mccainshare, CA_data, family = binomial)
+summary(logit.CA_trumpwin)
+
+# Log-likelihood of the estimates
+logLik(logit.CA_trumpwin)
+
+# Calculate Logit prediction
+prediction <- ilogit(-35.4037 + 0.7042*CA_data$mccainshare)
+# OR
+prediction <- predict(logit.CA_trumpwin, type="response")
+
+# Add prediction to the plot
+p + geom_line(aes(y=prediction), size=1)
+
+#' 
+#' ## Manually Fitting Logit
+#' 
+#' ## Prepare Variables & functions
+
+# DV  
+y <- cbind(CA_data$trumpwin)
+# IV
+x <- cbind(CA_data$mccainshare)
+# Constant
+cons <- rep(1, length(x[,1]))
+# Matrix of Constant and IV(s)
+xmat<-cbind(cons, x)
+
+# Set starting values taken from OLS.
+ols.result <- lm(y~x); ols.result
+stval <- ols.result$coeff
+
+#' ## First iteration
+
+# Optimize by log-likelihood
+logit.result <- optim(stval, llk.logit, method="BFGS", 
+                      control=list(maxit=0, trace=1), hessian=TRUE, y=y, x=x)
+
+# Printing Optimization results #
+# beta paramter estimates
+parm_est <- logit.result$par; parm_est 
+# variance covariance matrix
+var_cov <- solve(logit.result$hessian); var_cov
+# Standard error of beta estimates
+std_err <- sqrt(diag(var_cov)); std_err
+# Log-likelihood
+log_like <- -logit.result$value; log_like
+# Deviance
+dev <- -2*(log_like - 0); dev
+
+# Find new starting value
+beta <- cbind(parm_est) # Store paramete estiamtes
+plgtb <- 1/(1 + exp(-xmat%*%beta)) 
+# score vector
+score.vector <- t(xmat)%*%(y - plgtb); score.vector
+# direction vector
+direction.vector <- var_cov%*%score.vector; direction.vector
+# updated starting value
+update <- cbind(stval) + direction.vector; update
+
+#' ## Second iteration
+
+# Optimize by log-likelihood
+logit.result <- optim(update, llk.logit, method="BFGS", 
+                      control=list(maxit=0, trace=1), hessian=TRUE, y=y, x=x)
+
+# Printing Optimization results #
+# beta paramter estimates
+parm_est <- logit.result$par; parm_est 
+# variance covariance matrix
+var_cov <- solve(logit.result$hessian); var_cov
+# Standard error of beta estimates
+std_err <- sqrt(diag(var_cov)); std_err
+# Log-likelihood
+log_like <- -logit.result$value; log_like
+# Deviance
+dev <- -2*(log_like - 0); dev
+
+# Find new starting value
+beta <- cbind(parm_est) # Store paramete estiamtes
+plgtb <- 1/(1 + exp(-xmat%*%beta)) 
+# score vector
+score.vector <- t(xmat)%*%(y - plgtb); score.vector
+# direction vector
+direction.vector <- var_cov%*%score.vector; direction.vector
+# updated starting value
+update <- cbind(update) + direction.vector; update
+
+#' ## Third iteration
+
+# Optimize by log-likelihood
+logit.result <- optim(update, llk.logit, method="BFGS", 
+                      control=list(maxit=0, trace=1), hessian=TRUE, y=y, x=x)
+
+# Printing Optimization results #
+# beta paramter estimates
+parm_est <- logit.result$par; parm_est 
+# variance covariance matrix
+var_cov <- solve(logit.result$hessian); var_cov
+# Standard error of beta estimates
+std_err <- sqrt(diag(var_cov)); std_err
+# Log-likelihood
+log_like <- -logit.result$value; log_like
+# Deviance
+dev <- -2*(log_like - 0); dev
+
+# Find new starting value
+beta <- cbind(parm_est) # Store paramete estiamtes
+plgtb <- 1/(1 + exp(-xmat%*%beta)) 
+# score vector
+score.vector <- t(xmat)%*%(y - plgtb); score.vector
+# direction vector
+direction.vector <- var_cov%*%score.vector; direction.vector
+# updated starting value
+update <- cbind(update) + direction.vector; update
+
+#' ## Fourth iteration
+
+# Optimize by log-likelihood
+logit.result <- optim(update, llk.logit, method="BFGS", 
+                      control=list(maxit=0, trace=1), hessian=TRUE, y=y, x=x)
+
+# Printing Optimization results #
+# beta paramter estimates
+parm_est <- logit.result$par; parm_est 
+# variance covariance matrix
+var_cov <- solve(logit.result$hessian); var_cov
+# Standard error of beta estimates
+std_err <- sqrt(diag(var_cov)); std_err
+# Log-likelihood
+log_like <- -logit.result$value; log_like
+# Deviance
+dev <- -2*(log_like - 0); dev
+
+# Find new starting value
+beta <- cbind(parm_est) # Store paramete estiamtes
+plgtb <- 1/(1 + exp(-xmat%*%beta)) 
+# score vector
+score.vector <- t(xmat)%*%(y - plgtb); score.vector
+# direction vector
+direction.vector <- var_cov%*%score.vector; direction.vector
+# updated starting value
+update <- cbind(update) + direction.vector; update
+
+#' ## Fifth iteration
+
+# Optimize by log-likelihood
+logit.result <- optim(update, llk.logit, method="BFGS", 
+                      control=list(maxit=0, trace=1), hessian=TRUE, y=y, x=x)
+
+# Printing Optimization results #
+# beta paramter estimates
+parm_est <- logit.result$par; parm_est 
+# variance covariance matrix
+var_cov <- solve(logit.result$hessian); var_cov
+# Standard error of beta estimates
+std_err <- sqrt(diag(var_cov)); std_err
+# Log-likelihood
+log_like <- -logit.result$value; log_like
+# Deviance
+dev <- -2*(log_like - 0); dev
+
+# Find new starting value
+beta <- cbind(parm_est) # Store paramete estiamtes
+plgtb <- 1/(1 + exp(-xmat%*%beta)) 
+# score vector
+score.vector <- t(xmat)%*%(y - plgtb); score.vector
+# direction vector
+direction.vector <- var_cov%*%score.vector; direction.vector
+# updated starting value
+update <- cbind(update) + direction.vector; update
+
+#' ## Compare manual and automatic results
+
+# Fit Prediction
+prediction_manual <- ilogit(parm_est[1] + parm_est[2]*x)
+
+# Compare predictions
+p + geom_line(aes(y=prediction, color="Auto"), size=1) + 
+  geom_line(aes(y=prediction_manual, color="Manual"), size=1) + 
+  scale_color_discrete(name="Prediction")
 
 #+ eval=FALSE, echo=FALSE
 # Exporting HTML File
 # In R Studio
-# rmarkdown::render('TA_session_041119.R', 'pdf_document')
-# rmarkdown::render('TA_session_041119.R', 'github_document', clean=FALSE)
+# rmarkdown::render('TA_session_041119_ws.R', 'pdf_document')
+# rmarkdown::render('TA_session_041119_ws.R', 'github_document', clean=FALSE)
 # In Terminal, run:
-# Rscript -e "rmarkdown::render('TA_session_041119.R', 'github_document')"
-# Rscript -e "rmarkdown::render('TA_session_041119.R', 'pdf_document')"
+# Rscript -e "rmarkdown::render('TA_session_041119_ws.R', 'github_document')"
+# Rscript -e "rmarkdown::render('TA_session_041119_ws.R', 'pdf_document')"
