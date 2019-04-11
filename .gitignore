@@ -1,8 +1,5 @@
 ## List of files that should be ignored from git
 
-# Folders
-data/
-
 # File extensions
 *.html
 *.knit.md
