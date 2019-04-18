@@ -19,3 +19,7 @@
 *.log
 *.out
 *.synctex.gz
+
+# Specific files
+table2_fig1_fig2.dta
+boudreau_mackenzie_codebook_ajps.pdf
