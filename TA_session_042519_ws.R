@@ -213,11 +213,13 @@ data.frame(odds.ratio=exp(m1cf$est),
 
 round(pR2(m1),4) # all very low
 
+#'
 #' ### 3.2. McKelvey-Zavonia pseudo-R2 (manually)
 
 yhat.m1 <- predict(m1, type="response")
 round(mckR2.m1 <- var(yhat.m1) / (var(yhat.m1) + (pi^2/3)),5)
 
+#'
 #' ## 4. Obtain Classification Table
 #' 
 #' * Check value...
@@ -234,12 +236,14 @@ classtab <- data.frame(response = m1$model$sentsms, predicted = pred.m1)
 #' * Result
 xtabs(~ predicted + response, data = classtab)
 
+#'
 #' ## 5. Proportional Reduction in Error (PRE)
 
 pre(m1, sim=TRUE, R=1000)
 
 #' The reduction in error is effectively zero.
 
+#'
 #' ## 6. Generate ROC Curve
 #' 
 #' * Generalize Scott's Code
@@ -297,6 +301,7 @@ m2 <- glm(sentsms ~ spm*pentecostal2 + rsi*pentecostal2 + rpm*pentecostal2,
           data = d, family=binomial("logit"))
 summary(m2)
 
+#'
 #' ## 2. Calculate Adjusted McFadden R2 and compare it with the first model
 #' 
 #' * Check that dimention of m1 and m2 are the same.
@@ -381,7 +386,8 @@ ggplot(preddt, aes(x=tr,y=mean)) +
 #' Being Pentecostal (or other "prosperity" faction of the Christianity) 
 #' does moderate the treatment effect. Those who are Pentecostal are much more 
 #' likely to respond to Religious & Self-Affirming Treatment.
-
+#' 
+#' 
 #' ### Use zelig...
 
 # Model

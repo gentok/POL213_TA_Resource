@@ -549,10 +549,13 @@ pre(m1, sim=TRUE, R=1000)
     ## 
     ## Simulated Results
     ##      median lower  upper
-    ##  PRE 0.000  -0.159 0.000
-    ## ePRE 0.004  -0.043 0.051
+    ##  PRE 0.000  0.000  0.000
+    ## ePRE 0.006  -0.044 0.053
 
-The reduction in error is effectively zero. \#\# 6. Generate ROC Curve
+The reduction in error is effectively zero.
+
+6. Generate ROC Curve
+---------------------
 
 -   Generalize Scott's Code
 
@@ -811,7 +814,9 @@ ggplot(preddt, aes(x=tr,y=mean)) +
 
 ![](TA_session_042519_ws_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
-Being Pentecostal (or other "prosperity" faction of the Christianity) does moderate the treatment effect. Those who are Pentecostal are much more likely to respond to Religious & Self-Affirming Treatment. \#\#\# Use zelig...
+Being Pentecostal (or other "prosperity" faction of the Christianity) does moderate the treatment effect. Those who are Pentecostal are much more likely to respond to Religious & Self-Affirming Treatment.
+
+### Use zelig...
 
 ``` r
 # Model
