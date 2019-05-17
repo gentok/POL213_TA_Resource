@@ -1,0 +1,11 @@
+
+<table style="text-align:center"><caption><strong>Odds Ratios from Ordinal Logit Model</strong></caption>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td>Odds Ratio</td><td>Lower 95% CI</td><td>Upper 95% CI</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Ideology</td><td>0.582</td><td>0.485</td><td>0.696</td></tr>
+<tr><td style="text-align:left">Income</td><td>1.040</td><td>0.995</td><td>1.088</td></tr>
+<tr><td style="text-align:left">Education</td><td>1.180</td><td>1.064</td><td>1.309</td></tr>
+<tr><td style="text-align:left">Independent</td><td>0.363</td><td>0.231</td><td>0.568</td></tr>
+<tr><td style="text-align:left">Republican</td><td>0.227</td><td>0.119</td><td>0.425</td></tr>
+<tr><td style="text-align:left">Cue Reception</td><td>0.847</td><td>0.591</td><td>1.212</td></tr>
+<tr><td style="text-align:left">Republican Cue</td><td>1.241</td><td>0.648</td><td>2.403</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr></table>
