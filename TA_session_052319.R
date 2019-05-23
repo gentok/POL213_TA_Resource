@@ -23,11 +23,11 @@ library(readstata13)
 #'
 #' ## Data Preparation (Experiment Data on Name Recognition)
 #' 
-#' For original article, See [HERE]()
+#' For original article, See [HERE](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12034)
 #' 
 
 # Import Data
-d <- read.dta13("KamZechmeister_Study1.dta", 
+d <- read.dta13("https://github.com/gentok/POL213_TA_Resource/raw/master/KamZechmeister_Study1.dta", 
                 convert.factors = FALSE)
 names(d)
 
