@@ -11,7 +11,8 @@ This is the web repository that stores files relevant to the TA session for POL2
 * [**Week 3 Session (with workshop codes)**](TA_session_041819_ws.md) (also in [PDF](TA_session_041819_ws.pdf) and [R Code](TA_session_041819_ws.R))
 * [**Week 4 Session (with workshop codes)**](TA_session_042519_ws.md) (also in [PDF](TA_session_042519_ws.pdf) and [R Code](TA_session_042519_ws.R))
 * [**Week 5 Session (with workshop codes)**](TA_session_050219_ws.md) (also in [PDF](TA_session_050219_ws.pdf) and [R Code](TA_session_050219_ws.R))
-* [**Week 7 Session**](TA_session_051619.md) (also in [PDF](TA_session_050169.pdf) and [R Code](TA_session_051619.R))
+* [**Week 7 Session**](TA_session_051619.md) (also in [PDF](TA_session_051619.pdf) and [R Code](TA_session_051619.R))
+* [**Week 8 Session**](TA_session_052319.md) (also in [PDF](TA_session_052319.pdf) and [R Code](TA_session_052319.R)) *Visualization examples*
 
 ## Instruction for Checking & Downloading Files
 
